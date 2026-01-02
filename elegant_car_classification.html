@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Project Data Mining - Klasifikasi Mobil</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --primary-color: #667eea;
+      --secondary-color: #764ba2;
+      --text-dark: #2d3748;
+      --text-light: #718096;
+      --bg-light: #f7fafc;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+    }
+
+    /* Header Styles */
+    #header {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+      padding: 10px 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    #header img {
+      max-height: 40px;
+    }
+
+    .navbar {
+      padding: 0;
+    }
+
+    .navbar ul {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      list-style: none;
+      align-items: center;
+    }
+
+    .navbar a {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-dark);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .navbar a:hover,
+    .navbar a.active {
+      color: var(--primary-color);
+    }
+
+    .navbar a::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      left: 20px;
+      right: 20px;
+      height: 2px;
+      background: var(--primary-gradient);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .navbar a:hover::after,
+    .navbar a.active::after {
+      transform: scaleX(1);
+    }
+
+    /* Hero Section */
+    #hero {
+      padding: 120px 0 80px 0;
+      background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    #hero h1 {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+    }
+
+    #hero h2 {
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text-light);
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+
+    .btn-get-started {
+      background: var(--primary-gradient);
+      color: white;
+      padding: 14px 35px;
+      border-radius: 50px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .btn-get-started:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+      color: white;
+    }
+
+    .btn-watch-video {
+      color: var(--text-dark);
+      font-weight: 600;
+      margin-left: 30px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .btn-watch-video i {
+      font-size: 40px;
+      margin-right: 10px;
+      color: var(--primary-color);
+      transition: all 0.3s ease;
+    }
+
+    .btn-watch-video:hover {
+      color: var(--primary-color);
+    }
+
+    .btn-watch-video:hover i {
+      transform: scale(1.1);
+    }
+
+    .hero-img {
+      position: relative;
+      perspective: 1000px;
+    }
+
+    .hero-img img {
+      animation: floatComplex 6s ease-in-out infinite;
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.15));
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+    }
+
+    .hero-img img:hover {
+      animation-play-state: paused;
+      transform: scale(1.05) rotateY(5deg);
+      filter: drop-shadow(0 30px 60px rgba(102, 126, 234, 0.3));
+    }
+
+    @keyframes floatComplex {
+      0%, 100% { 
+        transform: translateY(0px) translateX(0px) rotate(0deg);
+      }
+      25% { 
+        transform: translateY(-15px) translateX(10px) rotate(1deg);
+      }
+      50% { 
+        transform: translateY(-25px) translateX(0px) rotate(0deg);
+      }
+      75% { 
+        transform: translateY(-15px) translateX(-10px) rotate(-1deg);
+      }
+    }
+
+    /* Animated background elements */
+    .hero-img::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulse-glow 3s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { 
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.5;
+      }
+      50% { 
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.8;
+      }
+    }
+
+    /* Floating particles effect */
+    .hero-img::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background-image: 
+        radial-gradient(circle, rgba(102, 126, 234, 0.4) 2px, transparent 2px),
+        radial-gradient(circle, rgba(118, 75, 162, 0.4) 2px, transparent 2px),
+        radial-gradient(circle, rgba(79, 172, 254, 0.4) 2px, transparent 2px);
+      background-size: 100px 100px, 150px 150px, 120px 120px;
+      background-position: 0 0, 40px 40px, 80px 20px;
+      animation: particlesFloat 20s linear infinite;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    @keyframes particlesFloat {
+      0% { 
+        background-position: 0 0, 40px 40px, 80px 20px;
+      }
+      100% { 
+        background-position: 100px 100px, 140px 140px, 180px 120px;
+      }
+    }
+
+    /* Enhanced Featured Services */
+    .featured-services {
+      padding: 80px 0;
+      background: white;
+      position: relative;
+    }
+
+    .service-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px 30px;
+      height: 100%;
+      box-shadow: 0 5px 30px rgba(0,0,0,0.08);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--primary-gradient);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 50px rgba(102, 126, 234, 0.25);
+    }
+
+    .service-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .service-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      background: var(--primary-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 25px;
+      transition: all 0.4s ease;
+      position: relative;
+    }
+
+    .service-card:nth-child(2) .service-icon {
+      background: var(--secondary-gradient);
+    }
+
+    .service-card:nth-child(3) .service-icon {
+      background: var(--success-gradient);
+    }
+
+    .service-icon i {
+      font-size: 36px;
+      color: white;
+    }
+
+    .service-card:hover .service-icon {
+      transform: rotateY(360deg) scale(1.1);
+    }
+
+    .service-card h4 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 15px;
+    }
+
+    .service-card p {
+      font-size: 15px;
+      color: var(--text-light);
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .service-features {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 0 0;
+    }
+
+    .service-features li {
+      padding: 8px 0;
+      font-size: 14px;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+    }
+
+    .service-features li i {
+      color: var(--primary-color);
+      margin-right: 10px;
+      font-size: 16px;
+    }
+
+    .feature-badge {
+      display: inline-block;
+      padding: 6px 15px;
+      background: rgba(102, 126, 234, 0.1);
+      color: var(--primary-color);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 15px;
+    }
+
+    /* About Section */
+    .about {
+      padding: 100px 0;
+      background: var(--bg-light);
+    }
+
+    .about h3 {
+      font-size: 36px;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+    }
+
+    .about p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-light);
+      margin-bottom: 20px;
+    }
+
+    /* Why Classification Section */
+    .why-classification-section {
+      padding: 100px 0;
+      background: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .why-classification-section::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(102, 126, 234, 0.05) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .section-header {
+      position: relative;
+      z-index: 2;
+    }
+
+    .section-main-title {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 15px;
+    }
+
+    .title-underline {
+      width: 80px;
+      height: 4px;
+      background: var(--primary-gradient);
+      margin: 0 auto 20px;
+      border-radius: 2px;
+    }
+
+    .section-main-subtitle {
+      font-size: 18px;
+      color: var(--text-light);
+      font-weight: 400;
+    }
+
+    .tech-content h3 {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+    }
+
+    .text-gradient {
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .lead-text {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-light);
+      margin-bottom: 40px;
+    }
+
+    .feature-list-modern {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .feature-item-modern {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 25px;
+      background: var(--bg-light);
+      border-radius: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .feature-item-modern:hover {
+      background: white;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transform: translateX(10px);
+    }
+
+    .feature-icon-wrapper {
+      width: 60px;
+      height: 60px;
+      min-width: 60px;
+      background: var(--primary-gradient);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-icon-wrapper::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><circle cx="15" cy="15" r="3" fill="white" opacity="0.3"/><circle cx="30" cy="20" r="3" fill="white" opacity="0.3"/><circle cx="45" cy="15" r="3" fill="white" opacity="0.3"/><circle cx="22" cy="35" r="3" fill="white" opacity="0.3"/><circle cx="38" cy="35" r="3" fill="white" opacity="0.3"/><circle cx="30" cy="45" r="3" fill="white" opacity="0.3"/><line x1="15" y1="15" x2="30" y2="20" stroke="white" opacity="0.2" stroke-width="1"/><line x1="30" y1="20" x2="45" y2="15" stroke="white" opacity="0.2" stroke-width="1"/><line x1="15" y1="15" x2="22" y2="35" stroke="white" opacity="0.2" stroke-width="1"/><line x1="45" y1="15" x2="38" y2="35" stroke="white" opacity="0.2" stroke-width="1"/><line x1="22" y1="35" x2="30" y2="45" stroke="white" opacity="0.2" stroke-width="1"/><line x1="38" y1="35" x2="30" y2="45" stroke="white" opacity="0.2" stroke-width="1"/><line x1="30" y1="20" x2="30" y2="45" stroke="white" opacity="0.2" stroke-width="1"/></svg>') center/cover;
+    }
+
+    .feature-icon-wrapper i {
+      font-size: 28px;
+      color: white;
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-content h5 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .feature-content p {
+      font-size: 14px;
+      color: var(--text-light);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .applications-wrapper {
+      position: relative;
+    }
+
+    .applications-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 30px;
+    }
+
+    .applications-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .app-card-modern {
+      background: white;
+      border: 2px solid #f0f0f0;
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .app-card-modern:hover {
+      border-color: var(--primary-color);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15);
+      transform: translateY(-5px);
+    }
+
+    .app-icon-wrapper {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 15px;
+      background: var(--primary-gradient);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    .app-card-modern:hover .app-icon-wrapper {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .app-card-modern h6 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .app-card-modern p {
+      font-size: 13px;
+      color: var(--text-light);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 991px) {
+      .section-main-title {
+        font-size: 32px;
+      }
+
+      .tech-content h3 {
+        font-size: 28px;
+      }
+
+      .applications-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .feature-item-modern:hover {
+        transform: translateX(0);
+      }
+    }
+
+    /* Enhanced Why Us Section */
+    #why-us {
+      padding: 100px 0;
+      background: white;
+    }
+
+    .car-type-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      transition: all 0.4s ease;
+      height: 100%;
+      border: 2px solid transparent;
+    }
+
+    .car-type-card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 20px 60px rgba(102, 126, 234, 0.2);
+      border-color: var(--primary-color);
+    }
+
+    .car-type-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      transition: all 0.4s ease;
+    }
+
+    .car-type-card:hover img {
+      transform: scale(1.1);
+    }
+
+    .car-type-card .card-body {
+      padding: 30px;
+    }
+
+    .car-type-card h5 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+    }
+
+    .car-type-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .car-type-card ul li {
+      padding: 10px 0;
+      font-size: 15px;
+      color: var(--text-light);
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+    }
+
+    .car-type-card ul li:last-child {
+      border-bottom: none;
+    }
+
+    .car-type-card ul li i {
+      color: var(--primary-color);
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    /* Team Section */
+    .team {
+      padding: 100px 0;
+      background: var(--bg-light);
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-title h2 {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 15px;
+    }
+
+    .section-title p {
+      font-size: 16px;
+      color: var(--text-light);
+    }
+
+    .team-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .member-card {
+      background: white;
+      border-radius: 30px;
+      padding: 60px 80px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      transition: all 0.4s ease;
+      position: relative;
+      max-width: 500px;
+      border: 1px solid rgba(102, 126, 234, 0.1);
+    }
+
+    .member-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 5px;
+      background: var(--primary-gradient);
+      border-radius: 0 0 10px 10px;
+    }
+
+    .member-card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 30px 80px rgba(102, 126, 234, 0.25);
+      border-color: var(--primary-color);
+    }
+
+    .member-image-wrapper {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin: 0 auto 30px;
+    }
+
+    .member-image-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: -15px;
+      background: var(--primary-gradient);
+      border-radius: 50%;
+      opacity: 0.15;
+      z-index: 0;
+    }
+
+    .member-image-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border: 3px solid transparent;
+      border-radius: 50%;
+      background: linear-gradient(white, white) padding-box,
+                  var(--primary-gradient) border-box;
+      z-index: 1;
+    }
+
+    .member-card img {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      object-fit: cover;
+      position: relative;
+      z-index: 2;
+      transition: all 0.4s ease;
+    }
+
+    .member-card:hover img {
+      transform: scale(1.08);
+    }
+
+    .member-info {
+      margin-top: 25px;
+    }
+
+    .member-card h4 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .member-role {
+      display: inline-block;
+      font-size: 15px;
+      color: var(--primary-color);
+      background: rgba(102, 126, 234, 0.1);
+      padding: 8px 24px;
+      border-radius: 20px;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+
+    .member-social {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .member-social a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      background: var(--bg-light);
+      color: var(--text-dark);
+      font-size: 20px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .member-social a::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--primary-gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .member-social a i {
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s ease;
+    }
+
+    .member-social a:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .member-social a:hover::before {
+      opacity: 1;
+    }
+
+    .member-social a:hover i {
+      color: white;
+    }
+
+    /* Process Section */
+    .contact-area {
+      padding: 100px 0;
+      background: white;
+    }
+
+    .contact-title h2 {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 15px;
+    }
+
+    .contact-title p {
+      font-size: 16px;
+      color: var(--text-light);
+      margin-bottom: 50px;
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .process-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      border: 2px solid rgba(102, 126, 234, 0.1);
+      transition: all 0.4s ease;
+    }
+
+    .process-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 60px rgba(102, 126, 234, 0.2);
+      border-color: var(--primary-color);
+    }
+
+    .process-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .process-icon {
+      width: 70px;
+      height: 70px;
+      min-width: 70px;
+      background: var(--primary-gradient);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: white;
+    }
+
+    .process-card:nth-child(2) .process-icon {
+      background: var(--success-gradient);
+    }
+
+    .process-header h4 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin: 0;
+    }
+
+    .process-instructions {
+      background: var(--bg-light);
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+
+    .process-instructions h5 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+    }
+
+    .instruction-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .instruction-list li {
+      padding: 12px 0;
+      font-size: 15px;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .instruction-list li::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      min-width: 8px;
+      background: var(--primary-gradient);
+      border-radius: 50%;
+    }
+
+    .upload-area {
+      border: 2px dashed var(--primary-color);
+      border-radius: 15px;
+      padding: 30px;
+      background: rgba(102, 126, 234, 0.03);
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .upload-area:hover {
+      background: rgba(102, 126, 234, 0.08);
+      border-color: var(--secondary-color);
+    }
+
+    .upload-label {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 15px;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    input[type="file"]:hover {
+      background: #f8f9fa;
+    }
+
+    .main-btn {
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      padding: 15px 50px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .main-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .result-area {
+      margin-top: 30px;
+      padding: 25px;
+      background: var(--bg-light);
+      border-radius: 15px;
+      min-height: 100px;
+    }
+
+    #status {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+
+    #hasil {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text-dark);
+    }
+
+    .preview-area {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    #gambar {
+      max-width: 100%;
+      max-height: 400px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    @media (max-width: 991px) {
+      .process-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+    }
+
+    /* Footer */
+    .footer-bottom {
+      background: var(--text-dark);
+      color: white;
+      padding: 30px 0;
+      text-align: center;
+    }
+
+    .footer-bottom .copyright {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .footer-bottom strong {
+      color: white;
+    }
+
+    .back-to-top {
+      position: fixed;
+      visibility: hidden;
+      opacity: 0;
+      right: 20px;
+      bottom: 20px;
+      z-index: 996;
+      background: var(--primary-gradient);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      transition: all 0.4s;
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .back-to-top i {
+      font-size: 28px;
+      color: #fff;
+      line-height: 0;
+    }
+
+    .back-to-top:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+    }
+
+    .back-to-top.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    /* Mobile Navigation */
+    .mobile-nav-toggle {
+      display: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: var(--text-dark);
+    }
+
+    @media (max-width: 991px) {
+      .mobile-nav-toggle {
+        display: block;
+      }
+
+      .navbar ul {
+        display: none;
+      }
+
+      #hero h1 {
+        font-size: 32px;
+      }
+
+      #hero h2 {
+        font-size: 16px;
+      }
+
+      .service-card {
+        margin-bottom: 30px;
+      }
+    }
+
+    /* Scroll animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-on-scroll {
+      animation: fadeInUp 0.8s ease-out;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header id="header">
+    <div class="container d-flex align-items-center justify-content-between">
+      <img src="assets/img/logi.png" alt="Logo">
+      
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link active" href="#hero">Home</a></li>
+          <li><a class="nav-link" href="#about">About</a></li>
+          <li><a class="nav-link" href="#why-us">Portfolio</a></li>
+          <li><a class="nav-link" href="#team">Team</a></li>
+          <li><a class="nav-link" href="#prosesdata">Process</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="hero" class="d-flex align-items-center">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 pt-5 pt-lg-0">
+          <h1>Klasifikasi Jenis Mobil Menggunakan Machine Learning</h1>
+          <h2>Aplikasi berbasis web yang menerapkan teknik data mining dan computer vision untuk mengklasifikasikan jenis mobil berdasarkan citra gambar. Sistem ini mampu mengidentifikasi kategori kendaraan secara otomatis dengan akurasi tinggi.</h2>
+          <div class="d-flex">
+            <a href="#prosesdata" class="btn-get-started">Get Started</a>
+            <a href="https://www.youtube.com/watch?v=_fgPpoXirx4" class="btn-watch-video">
+              <i class="bi bi-play-circle"></i>
+              <span>Watch Video</span>
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <img src="assets/img/hh.png" class="img-fluid hero-img" alt="Hero Image">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main id="main">
+    <!-- Enhanced Featured Services -->
+    <section class="featured-services">
+      <div class="container">
+        <div class="row g-4">
+          <div class="col-lg-4 col-md-6">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="bi bi-truck"></i>
+              </div>
+              <h4>Pickup</h4>
+              <p>Kendaraan serbaguna dengan kabin dan bak terbuka, ideal untuk keperluan komersial dan rekreasi outdoor.</p>
+              <ul class="service-features">
+                <li><i class="bi bi-check-circle-fill"></i> Kabin tertutup dengan bak terbuka</li>
+                <li><i class="bi bi-check-circle-fill"></i> Kapasitas angkut barang tinggi</li>
+                <li><i class="bi bi-check-circle-fill"></i> Desain 2 pintu praktis</li>
+                <li><i class="bi bi-check-circle-fill"></i> Sistem 4WD untuk medan berat</li>
+              </ul>
+              <span class="feature-badge">Akurasi: 96.5%</span>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="bi bi-bus-front"></i>
+              </div>
+              <h4>Bus</h4>
+              <p>Kendaraan transportasi massal dengan kapasitas besar, dirancang khusus untuk kenyamanan perjalanan jarak jauh.</p>
+              <ul class="service-features">
+                <li><i class="bi bi-check-circle-fill"></i> Kapasitas 15+ penumpang</li>
+                <li><i class="bi bi-check-circle-fill"></i> Body panjang dan kokoh</li>
+                <li><i class="bi bi-check-circle-fill"></i> Interior lapang dan nyaman</li>
+                <li><i class="bi bi-check-circle-fill"></i> AC dan fasilitas lengkap</li>
+              </ul>
+              <span class="feature-badge">Akurasi: 97.2%</span>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="bi bi-lightning-charge"></i>
+              </div>
+              <h4>Sport Car</h4>
+              <p>Mobil performa tinggi dengan desain aerodinamis, mengutamakan kecepatan dan handling superior.</p>
+              <ul class="service-features">
+                <li><i class="bi bi-check-circle-fill"></i> Desain coupe 2 pintu elegan</li>
+                <li><i class="bi bi-check-circle-fill"></i> Mesin bertenaga tinggi</li>
+                <li><i class="bi bi-check-circle-fill"></i> Aerodinamis optimal</li>
+                <li><i class="bi bi-check-circle-fill"></i> Handling presisi tinggi</li>
+              </ul>
+              <span class="feature-badge">Akurasi: 95.8%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <img src="assets/img/a.png" class="img-fluid" alt="About" style="border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.15);">
+          </div>
+          <div class="col-lg-6 pt-4 pt-lg-0">
+            <h3>Klasifikasi Jenis-Jenis Mobil</h3>
+            <p>
+              Beragam macam mobil di dunia dapat diklasifikasikan dengan berbagai kriteria. Meski begitu, pengklasifikasian yang tepat sangat penting karena dapat membantu pekerjaan manusia dalam berbagai aspek industri otomotif.
+            </p>
+            <p>
+              Klasifikasi mobil diperlukan karena dapat membantu efisiensi operasional. Klasifikasi berdasarkan jenis mobil dapat digunakan dalam sistem gerbang tol otomatis, manajemen area parkir, hingga analisis traffic. Hal ini sangat bermanfaat untuk optimalisasi sistem transportasi modern.
+            </p>
+            <p>
+              Melalui teknologi Computer Vision, sistem dapat menganalisa gambar dan memberikan informasi penting. Computer Vision merupakan cabang keilmuan yang mampu mengartikan visual layaknya manusia, namun dengan kecepatan dan akurasi yang lebih tinggi dan konsisten.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Classification Section -->
+    <section class="why-classification-section">
+      <div class="container">
+        <div class="section-header text-center mb-5">
+          <h2 class="section-main-title">Mengapa Klasifikasi Mobil Penting?</h2>
+          <div class="title-underline"></div>
+          <p class="section-main-subtitle">Teknologi pengenalan gambar revolusioner untuk industri otomotif</p>
+        </div>
+        
+        <div class="row align-items-center g-5">
+          <div class="col-lg-6">
+            <div class="tech-content">
+              <h3>Teknologi <span class="text-gradient">Computer Vision</span> Modern</h3>
+              <p class="lead-text">Dengan algoritma machine learning terkini, sistem kami dapat menganalisis fitur visual mobil seperti bentuk bodi, jumlah pintu, tinggi kendaraan, dan desain spesifik untuk mengidentifikasi jenis mobil dengan akurasi tinggi.</p>
+              
+              <div class="feature-list-modern">
+                <div class="feature-item-modern">
+                  <div class="feature-icon-wrapper">
+                    <i class="bi bi-brain"></i>
+                  </div>
+                  <div class="feature-content">
+                    <h5>Deep Learning Model</h5>
+                    <p>Dilatih dengan dataset 1000+ gambar ketiga jenis mobil</p>
+                  </div>
+                </div>
+                
+                <div class="feature-item-modern">
+                  <div class="feature-icon-wrapper">
+                    <i class="bi bi-lightning-charge"></i>
+                  </div>
+                  <div class="feature-content">
+                    <h5>Proses Cepat</h5>
+                    <p>Hasil klasifikasi dalam waktu kurang dari 2 detik</p>
+                  </div>
+                </div>
+                
+                <div class="feature-item-modern">
+                  <div class="feature-icon-wrapper">
+                    <i class="bi bi-graph-up-arrow"></i>
+                  </div>
+                  <div class="feature-content">
+                    <h5>Akurasi Tinggi</h5>
+                    <p>Tingkat akurasi mencapai 96.7% pada dataset uji</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-6">
+            <div class="applications-wrapper">
+              <h4 class="applications-title">Aplikasi Praktis:</h4>
+              <div class="applications-grid">
+                <div class="app-card-modern">
+                  <div class="app-icon-wrapper">
+                    <i class="bi bi-shop"></i>
+                  </div>
+                  <h6>Dealer Mobil</h6>
+                  <p>Analisis preferensi konsumen berdasarkan jenis mobil yang sering dicari</p>
+                </div>
+                
+                <div class="app-card-modern">
+                  <div class="app-icon-wrapper">
+                    <i class="bi bi-p-square"></i>
+                  </div>
+                  <h6>Parkir Otomatis</h6>
+                  <p>Penentuan tarif parkir berdasarkan kategori kendaraan</p>
+                </div>
+                
+                <div class="app-card-modern">
+                  <div class="app-icon-wrapper">
+                    <i class="bi bi-signpost-2"></i>
+                  </div>
+                  <h6>Sistem Toll</h6>
+                  <p>Klasifikasi otomatis untuk penentuan tarif tol</p>
+                </div>
+                
+                <div class="app-card-modern">
+                  <div class="app-icon-wrapper">
+                    <i class="bi bi-shield-check"></i>
+                  </div>
+                  <h6>Keamanan</h6>
+                  <p>Pemantauan jenis kendaraan di area tertentu</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section id="why-us" class="section-bg">
+      <div class="container">
+        <div class="section-title">
+          <h2>Kategori Klasifikasi</h2>
+          <p>Tiga kategori utama kendaraan yang dapat diidentifikasi oleh sistem kami</p>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-lg-4 col-md-6">
+            <div class="car-type-card">
+              <img src="assets/img/pickup.png" alt="Pickup">
+              <div class="card-body">
+                <h5>Mobil Pickup</h5>
+                <ul>
+                  <li><i class="bi bi-check2"></i> Mempunyai bak terbuka</li>
+                  <li><i class="bi bi-check2"></i> Angkutan barang dan kargo</li>
+                  <li><i class="bi bi-check2"></i> Kapasitas 2 baris bangku</li>
+                  <li><i class="bi bi-check2"></i> Desain 2 atau 4 pintu</li>
+                  <li><i class="bi bi-check2"></i> Ground clearance tinggi</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <div class="car-type-card">
+              <img src="assets/img/bus.png" alt="Bus">
+              <div class="card-body">
+                <h5>Mobil Bus</h5>
+                <ul>
+                  <li><i class="bi bi-check2"></i> Banyak baris tempat duduk</li>
+                  <li><i class="bi bi-check2"></i> Khusus angkutan penumpang</li>
+                  <li><i class="bi bi-check2"></i> Body besar dan panjang</li>
+                  <li><i class="bi bi-check2"></i> Kapasitas 15+ penumpang</li>
+                  <li><i class="bi bi-check2"></i> Tinggi atap maksimal</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <div class="car-type-card">
+              <img src="assets/img/sportt.png" alt="Sport">
+              <div class="card-body">
+                <h5>Mobil Sport</h5>
+                <ul>
+                  <li><i class="bi bi-check2"></i> Bentuk coupe aerodinamis</li>
+                  <li><i class="bi bi-check2"></i> Desain 2 pintu sporty</li>
+                  <li><i class="bi bi-check2"></i> Tampilan mewah & elegan</li>
+                  <li><i class="bi bi-check2"></i> Mesin berkapasitas tinggi</li>
+                  <li><i class="bi bi-check2"></i> Performa maksimal</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="prosesdata" class="contact-area">
+      <div class="container">
+        <div class="contact-title text-center">
+          <h2>PROSES DATA</h2>
+          <p>Upload gambar mobil untuk mendapatkan hasil klasifikasi secara otomatis</p>
+        </div>
+
+        <div class="process-grid">
+          <!-- Instructions Card -->
+          <div class="process-card">
+            <div class="process-header">
+              <div class="process-icon">
+                <i class="bi bi-list-check"></i>
+              </div>
+              <h4>Petunjuk Proses Data</h4>
+            </div>
+
+            <div class="process-instructions">
+              <h5>Langkah-langkah:</h5>
+              <ul class="instruction-list">
+                <li>Masukkan data gambar mobil yang ingin dicek</li>
+                <li>Klik tombol "CEK DATA" untuk memproses</li>
+                <li>Tunggu beberapa saat hingga hasil muncul</li>
+                <li>Sistem akan menampilkan klasifikasi jenis mobil</li>
+              </ul>
+            </div>
+
+            <div class="upload-area">
+              <label class="upload-label">
+                <i class="bi bi-cloud-upload" style="font-size: 48px; color: var(--primary-color); display: block; margin-bottom: 15px;"></i>
+                Upload Gambar Mobil
+              </label>
+              <form id="contact-form" action="assets/contact.php" name="file" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file" id="file" accept="image/*">
+                <button class="main-btn" id="uploadButton" type="submit">
+                  <i class="bi bi-search"></i> CEK DATA
+                </button>
+              </form>
+            </div>
+
+            <div class="result-area">
+              <p id="status"></p>
+              <p id="hasil"></p>
+            </div>
+          </div>
+
+          <!-- Preview Card -->
+          <div class="process-card">
+            <div class="process-header">
+              <div class="process-icon">
+                <i class="bi bi-image"></i>
+              </div>
+              <h4>Preview & Hasil</h4>
+            </div>
+
+            <div class="preview-area">
+              <img class="img-fluid" id="gambar" src="#" alt="Preview Gambar" style="display: none;" />
+              <div id="placeholder" style="padding: 100px 20px; background: var(--bg-light); border-radius: 15px; border: 2px dashed #ddd;">
+                <i class="bi bi-image" style="font-size: 80px; color: #ccc; display: block; margin-bottom: 20px;"></i>
+                <p style="color: var(--text-light); font-size: 16px;">Preview gambar akan muncul di sini</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="team">
+      <div class="container">
+        <div class="section-title">
+          <h2>Developer</h2>
+          <p>Hi Everyone 👋🏼 </p>
+        </div>
+
+        <div class="team-container">
+          <div class="member-card">
+            <div class="member-image-wrapper">
+              <img src="assets/img/team/team-2.png" alt="Muhammad Ababil">
+            </div>
+            <div class="member-info">
+              <h4>Muhammad Ababil</h4>
+              <span class="member-role">Data Enthusiast | Software Engineer | UI/UX </span>
+              <div class="member-social">
+                <a href="https://github.com/mababil" target="_blank" aria-label="GitHub"><i class="bi bi-github"></i></a>
+                <a href="https://instagram.com/mababil11?igshid=ZGUzMzM3NWJiOQ==" target="_blank" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                <a href="https://www.linkedin.com/in/mababil11/" target="_blank" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-bottom">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>eNno</span></strong>. All Rights Reserved
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center">
+    <i class="bi bi-arrow-up-short"></i>
+  </a>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  
+  <script type="text/javascript">
+    $(document).ready(function () {
+      'use strict';
+      
+      $('#uploadButton').on('click', function (event) {
+        var data;
+        event.stopPropagation();
+        event.preventDefault();
+        
+        data = new FormData();
+        data.append('file', $('input[id="file"]')[0].files[0]);
+
+        $.ajax({
+          url: 'https://habitat-tahoe-visits-glasgow.trycloudflare.com/predict2',
+          type: 'POST',
+          data: data,
+          cache: false,
+          dataType: 'json',
+          processData: false,
+          contentType: false,
+          timeout: 0,
+          mimeType: "multipart/form-data",
+          success: function (json) {
+            console.log(json);
+            if (json.success == true) {
+              $('#status').html('<i class="bi bi-check-circle-fill" style="color: #4facfe;"></i> File berhasil diproses!');
+            } else {
+              $('#status').html('<i class="bi bi-x-circle-fill" style="color: #f5576c;"></i> File gagal diproses!');
+            }
+            
+            if (json.label == 1) {
+              $('#hasil').html('<div style="padding: 20px; background: rgba(255, 0, 99, 0.1); border-left: 4px solid #FF0063; border-radius: 8px; margin-top: 15px;"><strong style="color: #FF0063; font-size: 18px;">Hasil: PickUp</strong><p style="margin-top: 10px; color: #666;">Pickup memiliki ciri-ciri: Mempunyai bak terbuka, Angkutan barang dan kargo, Kapasitas 2 baris bangku, Desain 2 atau 4 pintu, Ground clearance tinggi.</p></div>');
+            } else if (json.label == 0) {
+              $('#hasil').html('<div style="padding: 20px; background: rgba(79, 172, 254, 0.1); border-left: 4px solid #4facfe; border-radius: 8px; margin-top: 15px;"><strong style="color: #4facfe; font-size: 18px;">Hasil: Bus</strong><p style="margin-top: 10px; color: #666;">Bus memiliki ciri-ciri: Banyak baris tempat duduk, Khusus angkutan penumpang, Kapasitas 15+ penumpang, Tinggi atap maksimal.</p></div>');
+            } else if (json.label == 2) {
+              $('#hasil').html('<div style="padding: 20px; background: rgba(102, 126, 234, 0.1); border-left: 4px solid #667eea; border-radius: 8px; margin-top: 15px;"><strong style="color: #667eea; font-size: 18px;">Hasil: Sport</strong><p style="margin-top: 10px; color: #666;">Sport memiliki ciri-ciri: Bentuk coupe aerodinamis, Desain 2 pintu sporty, Tampilan mewah & elegan, Mesin berkapasitas tinggi, Performa maksimal.</p></div>');
+            }
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log('Error: ' + errorThrown);
+            $('#status').html('<i class="bi bi-exclamation-triangle-fill" style="color: #f5576c;"></i> Terjadi kesalahan saat memproses data!');
+          }
+        });
+      });
+
+      // Preview image
+      function readURL(input) {
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            $('#gambar').attr('src', e.target.result).show();
+            $('#placeholder').hide();
+          }
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      $("#file").change(function () {
+        readURL(this);
+      });
+    });
+  </script>
+</body>
+</html>
